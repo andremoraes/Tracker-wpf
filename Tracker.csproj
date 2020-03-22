@@ -251,6 +251,8 @@
     <Resource Include="CommonProjectsSettings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Content Include="DataBase\AccessDatabaseEngine.exe" />
+    <Content Include="DataBase\AccessDatabaseEngine_X64.exe" />
     <Content Include="DataBase\Tracker.accdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
