@@ -1,0 +1,31 @@
+﻿<UserControl xmlns:ig="http://schemas.infragistics.com/xaml"  x:Class="Tracker.Forms.ucGanttChart"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Tracker.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ig:XamGantt Name="MainGantt" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top" >
+            <ig:XamGantt.ViewSettings>
+                <ig:ProjectViewSettings/>
+            </ig:XamGantt.ViewSettings>
+            <ig:XamGantt.Project>
+                <ig:Project>
+                    <ig:Project.TaskSettings>
+                        <ig:ProjectTaskSettings AllowDelete="True" AllowInsert="True"/>
+                    </ig:Project.TaskSettings>
+                    <ig:Project.Settings>
+                        <ig:ProjectSettings/>
+                    </ig:Project.Settings>
+                    <ig:Project.ResourceItems>
+                        <ig:ProjectResource DisplayName="a" UniqueId="a"/>
+                        <ig:ProjectResource DisplayName="b" UniqueId="b"/>
+                        <ig:ProjectResource DisplayName="c" UniqueId="c"/>
+                    </ig:Project.ResourceItems>
+                </ig:Project>
+            </ig:XamGantt.Project>
+        </ig:XamGantt>
+    </Grid>
+</UserControl>

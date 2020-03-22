@@ -1,0 +1,82 @@
+﻿<UserControl xmlns:igWPF="http://schemas.infragistics.com/xaml/wpf"  xmlns:ig="http://schemas.infragistics.com/xaml"   x:Class="Tracker.Forms.ucMaintainVL"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Tracker.UserControls"
+             xmlns:viewModel="clr-namespace:Tracker.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.DataContext>
+            <viewModel:vmValueLists x:Name="cBoViewModel"></viewModel:vmValueLists>
+        </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <StatusBar  Grid.Row="0" x:Name="lView" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Margin="0,0,0,0">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <Label Content="Value List Group" Grid.Column="0" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <igWPF:XamComboEditor  Name="cboVListGroup" MinWidth="180" Width="Auto" Theme="Office2k7Blue"
+                     IsEditable="True" Grid.Column="1"   
+                    DisplayMemberPath="Key" ItemsSource ="{Binding ComboBoxItems}"
+                    Value="{Binding SelectedCboItem, Mode=TwoWay}" SelectedItem="{Binding ComplexType, Mode=TwoWay}">
+                </igWPF:XamComboEditor>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="2">
+                <Button x:Name="cmdRefresh" Click="cmdRefresh_Click" Height="33" ToolTip="Refresh List" Width="32" Grid.Column="2">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Tracker;component/Resources/r.jpg" Width="30" Height="30" ToolTip="Refresh List" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <!--<TextBlock Text="Blablabla" VerticalAlignment="Center" />-->
+                    </StackPanel>
+                </Button>
+            </StatusBarItem>
+            <StatusBarItem  Grid.Column="4" HorizontalAlignment="Center">
+                <Button Name="cmdImportData"  IsEnabled="False">
+                    <TextBlock TextAlignment="Center" TextWrapping="Wrap">Import Data</TextBlock>
+                </Button>
+            </StatusBarItem>
+            <StatusBarItem  Grid.Column="5" HorizontalAlignment="Center">
+                <Button Name="cmdExportData" Click="cmdExportData_Click" IsEnabled="False">
+                    <TextBlock TextAlignment="Center" TextWrapping="Wrap">Export Data</TextBlock>
+                </Button>
+            </StatusBarItem>
+            <StatusBarItem  Grid.Column="6" HorizontalAlignment="Center">
+                <Button Name="cmdHelp" Click="cmdHelp_Click" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Tracker;component/Resources/Help-icon.png" Width="30" Height="30" ToolTip="Refresh List" Stretch="Fill" />
+                        <TextBlock Text="Help" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StatusBarItem>
+        </StatusBar>
+
+
+        <!--<ig:XamDataGrid Grid.Row="1" x:Name="xDataGrid" HorizontalAlignment="Stretch" Margin="0,0,0,0" />-->
+        <igWPF:XamDataGrid  Grid.Row="1" x:Name="xDataGrid" HorizontalAlignment="Stretch" Margin="0,0,0,0" />
+        
+    </Grid>
+</UserControl>

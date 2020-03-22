@@ -1,0 +1,61 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tracker"
+        xmlns:Custom="http://infragistics.com/DockManager" xmlns:ig="http://schemas.infragistics.com/xaml" x:Class="Tracker.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <!--<TextBlock x:Name="textBlock" ><InlineUIContainer>                 </TextBlock>-->
+        <ig:XamMenu x:Name="Main_Menu" Height="50" Margin="0,0,0,0" VerticalAlignment="Top"> </ig:XamMenu>
+
+        <Custom:XamDockManager x:Name="Main_DockManager" Margin="0,50,0.4,30.4" FloatingWindowDoubleClickAction="ToggleDockedState" PaneNavigatorButtonDisplayMode="Always" Theme="Office2010Blue" ShowFloatingWindowsInTaskbar="True">
+            <Custom:DocumentContentHost>
+                <Custom:SplitPane>
+                    <Custom:TabGroupPane x:Name="Main_TabGroupPane"/>
+                </Custom:SplitPane>
+            </Custom:DocumentContentHost>
+        </Custom:XamDockManager>
+        <StatusBar x:Name="Main_sBar" Height="30" Margin="0,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" >
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <TextBlock  x:Name="tsText">Ready</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="1">
+                <ComboBox Name="CboDiscipline"  Text="Discipline" Width="100" ToolTip="Change Discipline here" SelectionChanged="CboDiscipline_SelectionChanged"  >
+                    <ComboBoxItem Content="Discipline"  />
+                </ComboBox>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="2">
+                <TextBlock Name="sbUserName">UserName</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="3">
+                <TextBlock Name ="sbVersion" ToolTip="Program Version"> Version</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <CheckBox Name ="sbChkMenuItemsWithPrefix" ToolTip="Use Menu Items with Prefix">Use Prefix?</CheckBox>
+            </StatusBarItem>
+            <!--<MenuItem Header="User Name" Grid.Column="1"/>
+            <MenuItem Name ="sbDisciplines"  Header="Discipline" Width="143" Grid.Column="2"/>
+            <MenuItem Header="Message Area:" HorizontalAlignment="Stretch" Grid.Column="1"/>
+        <Label Name="sb_VersionLabel"  Content="Version" ToolTip="Program Version No" Height="33" Width="193"  TextOptions.TextHintingMode="Animated"/>-->
+        </StatusBar>
+    </Grid>
+</Window>
