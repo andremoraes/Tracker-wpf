@@ -90,9 +90,9 @@ namespace Tracker.UserControls
      
 
 
-        public void setFilter(string sql, XamDataGrid xDG, DbConnection cnn)
+        public void setFilter(string sql, XamDataGrid xDG, DbConnection cnn, MyDb.Common.DataBaseType cnnType)
         {
-            _BasicQuery = sql; _cnn = cnn; _xDG = xDG;
+            _BasicQuery = sql; _cnn = cnn; _xDG = xDG; _cnnType = cnnType;
             setFields();
             FcItems = new ObservableCollection<FilterItem>();
             lbMain.ItemsSource = FcItems;
@@ -209,9 +209,11 @@ namespace Tracker.UserControls
                 //(_xDG != null && _xDG.DefaultFieldLayout != null || _xDG.DefaultFieldLayout.Fields != null && _xDG.DefaultFieldLayout.Fields.Count >0)
                 )
             {
-                OracleDataAdapter da = new OracleDataAdapter("select * from (" + _BasicQuery + ") where 1=2", (OracleConnection)_cnn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
+                string sql = "select * from (" + _BasicQuery + ") where 1=2";
+                //var da = MyDb.Common.//new OracleDataAdapter(, (OracleConnection)_cnn);
+                //DataTable dt = new DataTable();
+                //da.Fill(dt);
+                DataTable dt = MyDb.Common.sql2DT(sql, _cnn);
                 setFieldsFromDT(dt.Columns);
             }
             else

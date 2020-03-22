@@ -27,7 +27,7 @@ namespace Tracker
     public class MyApplication
     {
         public Classes.cSettings Csettings = new cSettings();
-        public string Prj_No = "BPGOM";
+        public string Prj_No = "OASIS";
         public string Public_Location = "";
         public PrjSettings _PrjSettings = new PrjSettings();
 
@@ -44,6 +44,8 @@ namespace Tracker
             {
                 Csettings = Classes.Class_Settings.Deserialize(SettingsFileName);
                 Public_Location = Csettings.PublicPath + @"Tracker\";
+                string cnnString = "Provider = Microsoft.ACE.OLEDB.12.0; Data Source = '" + System.Windows.Forms.Application.StartupPath + "\\DataBase\\Tracker.accdb'; Persist Security Info = True;";
+                Csettings.cnnString = cnnString;
                 //txtSiteUrl.Text = csettings.SP_Site; try { num_sp_Row_limit.Value = csettings.SP_RowLimit; } catch { }
                 //txtListTitle.Text = csettings.SP_List_Title;
                 //txtSP_Path_Filter.Text = csettings.SP_List_Path_In; txtPathOut.Text = csettings.Path_Out;
@@ -56,7 +58,7 @@ namespace Tracker
             try
             {
                 DataRow dr = null;
-                string sql = "Select * from tracker_projects where upper(prj_no) = '{0}'";
+                string sql = "Select * from tracker_tb_projects where upper(prj_no) = '{0}'";
                 sql = string.Format(sql, Prj_No);
                 OracleConnection cnn = new OracleConnection(Csettings.cnnString);
                 try { cnn.Open(); } catch { }

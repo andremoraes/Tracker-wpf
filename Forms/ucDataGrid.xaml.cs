@@ -129,7 +129,7 @@ namespace Tracker.Forms
             {
                 cnn = MyDb.Common.cnnType2DbConnection(cnnType, cnnString);
                 cnn.Open();
-                dbFilter.setFilter(_SQL, mainDataGrid, cnn);
+                dbFilter.setFilter(_SQL, mainDataGrid, cnn, cnnType);
             }
         }
     }
