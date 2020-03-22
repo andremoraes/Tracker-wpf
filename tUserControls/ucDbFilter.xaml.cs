@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,8 +40,8 @@ namespace Tracker.UserControls
         List<cField> Fields = null; //Dictionary<int, cField> Fields = null;
         
         public bool _CaseSensitive ;
+        private readonly FilterItemsViewModel _viewModel;
 
-        
         //public string tnAttr = "tAttributes";
         //public string tnObjTypes = "tObjTypes"; //not used anymore to make the filter simples - now is just either "and" or "or"
         public string tnSQLSearch = "tSQLSearch";
@@ -67,8 +68,8 @@ namespace Tracker.UserControls
 
         
 
-
-        ObservableCollection<FilterItem> FcItems { get; set; }
+        
+        //ObservableCollection<FilterItem> FcItems { get; set; }
         ObservableCollection<Clauses> oClauses { get; set; }
 
         
@@ -94,13 +95,13 @@ namespace Tracker.UserControls
         {
             _BasicQuery = sql; _cnn = cnn; _xDG = xDG; _cnnType = cnnType;
             setFields();
-            FcItems = new ObservableCollection<FilterItem>();
-            lbMain.ItemsSource = FcItems;
+            //FcItems = new ObservableCollection<FilterItem>();
+            lbMain.DataContext = DataContext;//lbMain.ItemsSource = FcItems;
             addFilterItem();
             //fi.Field = fiel
-            if (FcItems.Count > 0)
+            if(_viewModel.FilterItems.Count>0)///if (FcItems.Count > 0)
             {
-                lbMain.ScrollIntoView(FcItems.Last());
+                lbMain.ScrollIntoView(_viewModel.FilterItems.Last());//FcItems.Last());
                 Infragistics.Controls.Editors.XamMultiColumnComboEditor ce = null;
                 //lbMain.Items.MoveCurrentToFirst(); 
                 int pos = 0;
@@ -119,9 +120,10 @@ namespace Tracker.UserControls
             string sqlFilter = "";
             try
             {
-                if (FcItems.Count > 0)
+                //if (FcItems.Count > 0)
+                if (_viewModel.FilterItems.Count>0)
                 {
-                    foreach (FilterItem fi in FcItems)
+                    foreach (FilterItem fi in _viewModel.FilterItems)//FcItems)
                     {
                         if (fi.Field != null)
                         {
@@ -140,17 +142,19 @@ namespace Tracker.UserControls
         public ucDbFilter()
         {
             InitializeComponent();
+            _viewModel = new FilterItemsViewModel();
+            DataContext = _viewModel;
             //
-            FcItems = new ObservableCollection<FilterItem>
-            {
+            //FcItems = new ObservableCollection<FilterItem>
+            //{
             //new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains}, // AndOr = qLogOper.iOpenParenthesis, FieldName = "FN1", Clause= Clauses.Contains, FieldAlias ="FA1" 
             //new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains, Field = new cField() { FieldAlias  = "Doc No", FieldName = "Doc_No", FieldPosition=0, FieldHasValueList = false,FieldType = Strings4Enums.qFieldType.iText, FieldVisible = true, Tag ="" } },//AndOr = qLogOper.iAnd, FieldName = "FN2", Clause = Clauses.Contains, FieldAlias = "FA2" },
             //new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains, Field = new cField() { FieldAlias  = "Doc xNo", FieldName = "Doc_No", FieldPosition=0, FieldHasValueList = false,FieldType = Strings4Enums.qFieldType.iText, FieldVisible = true, Tag ="" } },//  new FilterItem() { AndOr = qLogOper.iAnd, FieldName = "FN3", Clause = Clauses.Contains, FieldAlias = "FA3" },
             //new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains}, // AndOr = qLogOper.iOpenParenthesis, FieldName = "FN1", Clause= Clauses.Contains, FieldAlias ="FA1" 
-             new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains, Field = new cField() { FieldAlias  = "Doc No", FieldName = "Doc_No", FieldPosition=0, FieldHasValueList = false,FieldType = Strings4Enums.qFieldType.iText, FieldVisible = true, Tag ="" } },//AndOr = qLogOper.iAnd, FieldName = "FN2", Clause = Clauses.Contains, FieldAlias = "FA2" },
+            // new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains, Field = new cField() { FieldAlias  = "Doc No", FieldName = "Doc_No", FieldPosition=0, FieldHasValueList = false,FieldType = Strings4Enums.qFieldType.iText, FieldVisible = true, Tag ="" } },//AndOr = qLogOper.iAnd, FieldName = "FN2", Clause = Clauses.Contains, FieldAlias = "FA2" },
             //new FilterItem() {  Clauses = Strings4Enums.qClauses.Contains, Field = new cField() { FieldAlias  = "Doc xNo", FieldName = "Doc_No", FieldPosition=0, FieldHasValueList = false,FieldType = Strings4Enums.qFieldType.iText, FieldVisible = true, Tag ="" } }//  new FilterItem() { AndOr = qLogOper.iAnd, FieldName = "FN3", Clause = Clauses.Contains, FieldAlias = "FA3" },
-            };
-            lbMain.ItemsSource = FcItems;
+            //};
+            lbMain.ItemsSource = _viewModel.FilterItems;//FcItems;
             lbMain.Items.Refresh();
         }
         /// <summary>
@@ -183,7 +187,7 @@ namespace Tracker.UserControls
                 default:
                     break;
             }
-            FcItems.Add(fi);//return fi;
+            _viewModel.FilterItems.Add(fi);//FcItems.Add(fi);//return fi;
             int pos = lbMain.Items.Count - 1;
             if (pos==0) 
             { lbMain.Items.Refresh(); }
@@ -358,7 +362,7 @@ namespace Tracker.UserControls
 
         void FcItems_Set_newClause_Value(FilterItem curItem, Strings4Enums.qClauses newClause)
         {
-            foreach (var fcitem in FcItems)
+            foreach(var fcitem in _viewModel.FilterItems)//foreach (var fcitem in FcItems)
             {
                 if (fcitem == curItem)
                 {
@@ -378,7 +382,7 @@ namespace Tracker.UserControls
 
         void FcItems_Set_newField_Value(FilterItem curItem, cField newField)
         {
-            foreach (var fcitem in FcItems)
+            foreach (var fcitem in _viewModel.FilterItems) //foreach (var fcitem in FcItems)
             {
                 if (fcitem == curItem)
                 {
@@ -425,9 +429,10 @@ namespace Tracker.UserControls
                 //fi.Field = fiel
                 //FcItems.Add(fi);
                 addFilterItem();
-                if (FcItems.Count > 0)
+                if(_viewModel.FilterItems.Count>0)//if (FcItems.Count > 0)
                 {
-                    lbMain.ScrollIntoView(FcItems.Last());
+                    //lbMain.ScrollIntoView(FcItems.Last());
+                    lbMain.ScrollIntoView(_viewModel.FilterItems.Last());
                 }
                 //    new FilterItem()
                // lbMain.Items.Refresh();
@@ -440,9 +445,9 @@ namespace Tracker.UserControls
             try
             {
                 FilterItem curItem = (FilterItem)((ListBoxItem)lbMain.ContainerFromElement((Button)sender)).Content;
-                if (FcItems.Count > 1)
+                if(_viewModel.FilterItems.Count<1)//if (FcItems.Count > 1)
                 {
-                    FcItems.Remove(curItem);
+                    _viewModel.FilterItems.Remove(curItem);//FcItems.Remove(curItem);
                     lbMain.Items.Refresh();
                 }
             }
@@ -472,11 +477,12 @@ namespace Tracker.UserControls
         private void cboValue_DropDownOpened(object sender, EventArgs e)
         {
             if (lbMain.SelectedIndex == -1 ) { return; }
-            if (FcItems[lbMain.SelectedIndex].Field is null ) { return; }
+            if (_viewModel.FilterItems[lbMain.SelectedIndex].Field is null) { return; }
+            //if (FcItems[lbMain.SelectedIndex].Field is null ) { return; }
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             int DataRepeaterItem2Exclude = lbMain.SelectedIndex;
             string sqlWhere = makeQuery(DataRepeaterItem2Exclude);
-            string attrName = (string)FcItems[lbMain.SelectedIndex].Field.FieldName;
+            string attrName = (string)_viewModel.FilterItems[lbMain.SelectedIndex].Field.FieldName;//(string)FcItems[lbMain.SelectedIndex].Field.FieldName;
             ComboBox cbovalue1 = sender as ComboBox;
             if (attrName != null)
             {
@@ -574,13 +580,130 @@ namespace Tracker.UserControls
         }
     }
 
-    public class FilterItem
+    public class BaseViewModel : INotifyPropertyChanged
     {
-       // public Strings4Enums.qLogOper AndOr { get; set; }
-        public cField Field { get; set; }
-        public Strings4Enums.qClauses Clauses { get; set; }
-        public string Value1 { get; set; }  //would be nice to have a control as datecalendar or listbox (with) for some datatypes or sclauses
-        public string Value2 { get; set; }  //present only in a few options of sClause e.g Between; 
+        #region Events
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        protected void OnNotifyPropertyChanged([CallerMemberName] string memberName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(memberName));
+            }
+        }
+    }
+
+   
+
+    public class FilterItemsViewModel : BaseViewModel
+    {
+        ObservableCollection<FilterItem> _FilterItems = new ObservableCollection<FilterItem>();
+        public ObservableCollection<FilterItem> FilterItems
+        {
+            get
+            {
+                return _FilterItems;
+            }
+            set
+            {
+                if (_FilterItems != value)
+                {
+                    _FilterItems = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
+    }
+
+    public class FilterItem : BaseViewModel
+    {
+        // public Strings4Enums.qLogOper AndOr { get; set; }
+        // public cField Field { get; set; }
+        // public Strings4Enums.qClauses Clauses { get; set; }
+        // public string Value1 { get; set; }  //would be nice to have a control as datecalendar or listbox (with) for some datatypes or sclauses
+        // public string Value2 { get; set; }  //present only in a few options of sClause e.g Between; 
+        Strings4Enums.qLogOper _AndOr;
+        public Strings4Enums.qLogOper AndOr
+        {
+            get
+            {
+                return _AndOr;
+            }
+            set
+            {
+                if (_AndOr != value)
+                {
+                    _AndOr = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
+        cField _Field  = null;
+        public cField Field
+        {
+            get
+            {
+                return _Field;
+            }
+            set
+            {
+                if (_Field != value)
+                {
+                    _Field = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
+        Strings4Enums.qClauses _Clauses;
+        public Strings4Enums.qClauses Clauses
+        {
+            get
+            {
+                return _Clauses;
+            }
+            set
+            {
+                if (_Clauses != value)
+                {
+                    _Clauses = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
+        string _Value1 = null;
+        public string Value1
+        {
+            get
+            {
+                return _Value1;
+            }
+            set
+            {
+                if (_Value1 != value)
+                {
+                    _Value1 = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
+        string _Value2 = null;
+        public string Value2
+        {
+            get
+            {
+                return _Value2;
+            }
+            set
+            {
+                if (_Value2 != value)
+                {
+                    _Value2 = value;
+                    OnNotifyPropertyChanged();
+                }
+            }
+        }
     }
 
             

@@ -32,16 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoCompleteTextBox, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCompleteTextBox.1.1.0\lib\net472\AutoCompleteTextBox.dll</HintPath>
+    </Reference>
     <Reference Include="InfragisticsWPF4.v19.2, Version=19.2.20192.52, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.Editors.v19.2, Version=19.2.20192.52, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.DataPresenter.v19.2, Version=19.2.20192.52, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.DataManager.v19.2, Version=19.2.20192.52, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="InfragisticsWPF4.Controls.Editors.XamComboEditor.v19.2, Version=19.2.20192.52, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="AutoCompleteTextBox, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>D:\Andre\source\repos\Tracker\packages\AutoCompleteTextBox.1.0.1\lib\net452\AutoCompleteTextBox.dll</HintPath>
-    </Reference>
-    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
-      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.19.6.0\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
