@@ -1,0 +1,125 @@
+﻿<UserControl 
+     xmlns:ig="http://schemas.infragistics.com/xaml" 
+    x:Class="Tracker.UserControls.ucDbFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             
+    xmlns:viewModel1="clr-namespace:Tracker.UserControls.ViewModel"
+    mc:Ignorable="d" Width="Auto" 
+             d:DesignHeight="120" d:DesignWidth="500">
+   
+    <Grid>
+        <!--<Grid.DataContext>
+            <viewModel1:vmDbFilter x:Name="DbFilterViewModel"></viewModel1:vmDbFilter>
+        </Grid.DataContext>-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="44"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox Grid.Column="0" ItemsSource="{Binding FcItems}" 
+        x:Name="lbMain" Background="Cornsilk" BorderThickness="1"
+        SelectionMode="Single"  >
+          
+            <ListBox.ItemContainerStyle>
+                <Style
+                TargetType="ListBoxItem">
+                    <Setter
+                    Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate
+                            TargetType="ListBoxItem">
+                                <StackPanel >
+                                    <!--<CheckBox
+                                    Content="Check this checkbox!" />
+                                    <TextBlock
+                                    Text="{TemplateBinding Content}" />-->
+                                    <Grid  x:Name="RowsGrid" >
+                                        <Grid.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <!-- All rows -->
+                                                <Setter Property="BorderBrush" Value="Black" />
+                                                <Setter Property="BorderThickness" Value="0 0 0 1" />
+                                                <!--<Setter Property="CornerRadius" Value="2" />-->
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions   >
+                                            <ColumnDefinition Width="16"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="20"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border>
+                                            <Image Grid.Column="0" x:Name="attrType"  Source="pack://siteoforigin:,,,/Resources/Text.bmp" Tag="iText"></Image>
+                                        </Border>
+                                        <Border Grid.Column="1">
+                                            <ig:XamMultiColumnComboEditor x:Name="cboFieldName" Height="19" Width="Auto" MinWidth="200"   MaxWidth="600"  
+                                                      ItemsSource="{Binding Fields}" DisplayMemberPath="FieldAlias" SelectedValuePath="FieldName" MinDropDownWidth="150"
+                                                      Margin="2 2 2 2" DropDownOpening="cboFieldName_DropDownOpening" SelectionChanged="cboFieldName_SelectionChanged" />
+                                        </Border>
+                                        <Border Grid.Column="2">
+                                            <ComboBox  x:Name="cboClause" Height="19" Width="60" MaxWidth="100" SelectionChanged="cboClause_SelectionChanged" 
+                                                       HorizontalAlignment="Left"
+                                                       Margin="2 2 2 2"/>
+                                        </Border>
+                                        <Border Grid.Column="3">
+                                            <ComboBox  x:Name="cboValue1" Height="19" Width="60" MaxWidth="100" SelectionChanged="cboValue1_SelectionChanged" 
+                                                       IsEditable="True" IsTextSearchEnabled="True" DropDownOpened="cboValue1_DropDownOpened"
+                                                       Margin="2 2 2 2" />
+                                        </Border>
+                                        <Border Grid.Column="4">
+                                            <Label Content="and"> </Label>
+                                        </Border>
+                                        <Border Grid.Column="5">
+                                            <ComboBox  x:Name="cboValue2" Height="19" Width="60" MaxWidth="100" SelectionChanged="cboValue2_SelectionChanged" 
+                                                       IsEditable="True" IsTextSearchEnabled="True"  DropDownOpened="cboValue2_DropDownOpened"
+                                                       Margin="2 2 2 2" />
+                                        </Border>
+                                        <Border Grid.Column="6">
+                                            <Button Grid.Column="6" x:Name="btnAdd" ToolTip="Add an Extra Clause"
+                                                Width="16" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnAdd_Click">
+                                                <Image Source="pack://siteoforigin:,,,/Resources/add.png" ></Image>
+                                            </Button>
+                                        </Border>
+                                        <Border Grid.Column="7">
+                                            <Button Grid.Column="7" x:Name="btnRemove" ToolTip="Remove Clause"
+                                            Width="16" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnRemove_Click">
+                                                <Image Source="pack://siteoforigin:,,,/Resources/Remove.png"></Image>
+                                            </Button>
+                                        </Border>
+                                        <Border Grid.Column="8">
+                                            <Button Grid.Column="8" x:Name="btnPaste" ToolTip="Paster list of items from Excel"
+                                            Width="16" Height="18" HorizontalAlignment="Right" VerticalAlignment="Center" Click="btnPaste_Click">
+                                                <Image Source="pack://siteoforigin:,,,/Resources/clipboard.png"></Image>
+                                            </Button>
+                                        </Border>
+
+                                    </Grid>
+                                </StackPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <!--<ListBox.Items>
+                <ListBoxItem>Bob</ListBoxItem>
+                <ListBoxItem>Jim</ListBoxItem>
+                <ListBoxItem>Dave</ListBoxItem>
+            </ListBox.Items>-->
+        </ListBox>
+
+        <StackPanel Background="White" Grid.Column="1" Orientation="Vertical" >
+            <RadioButton x:Name="optAnd" IsChecked="True"  Content="And" Margin="5,0,0,0"/>
+            <RadioButton x:Name="optOr" IsChecked="False"  Content="or" Margin="5,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

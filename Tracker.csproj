@@ -175,12 +175,6 @@
     <Resource Include="Resources\Search-32.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibraries\clbData\MyDb.csproj">
-      <Project>{db2ee7dc-67e2-4d56-b279-29eea03dc9af}</Project>
-      <Name>MyDb</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\add.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -240,6 +234,16 @@
     <Resource Include="Resources\wp.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="clbData\MyDb.csproj">
+      <Project>{db2ee7dc-67e2-4d56-b279-29eea03dc9af}</Project>
+      <Name>MyDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="tUserControls\Tracker.UserControls.csproj">
+      <Project>{cf7e167a-aa7d-4765-9478-c2aba3a268b0}</Project>
+      <Name>Tracker.UserControls</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\AppsCommon\AppsCommon.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
