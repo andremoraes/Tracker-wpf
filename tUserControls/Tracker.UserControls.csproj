@@ -148,5 +148,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\clbData\MyDb.csproj">
+      <Project>{db2ee7dc-67e2-4d56-b279-29eea03dc9af}</Project>
+      <Name>MyDb</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

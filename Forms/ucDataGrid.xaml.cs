@@ -4,6 +4,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -25,20 +26,19 @@ namespace Tracker.Forms
     /// </summary>
     public partial class ucDataGrid : UserControl
     {
-        public string _SQL = null;
-        public string _SQL_Update = null;
-
-        //private OracleConnection cnn = null;
-        public OracleConnection cnn = new OracleConnection(My.Application.Csettings.cnnString);
         private readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        public string _SQL = null;
+        public string _SQL_Update = null;
+        public MyDb.Common.DataBaseType cnnType;
+
+        public DbConnection cnn = null;
+        public string cnnString = "";
+        
         public bool canUpdate = false;
         public bool canDelete = false;
         public bool canInsert = false;
         public bool canSelect = true;
-
-        string sql = "select * from tracker_tb_users";
-        
 
         public ucDataGrid()
         {
@@ -62,8 +62,11 @@ namespace Tracker.Forms
 
         private void cmdFilter_Click(object sender, RoutedEventArgs e)
         {
-            string Filter_Sql = dbFilter.makeQuery();
+            string sql = _SQL;
+            string sqlFilter = dbFilter.makeQuery() + "";
+            string sSQl = sqlFilter == "" ? sql : "select * from (" + sql + ") where " + sqlFilter;
 
+            
             DataTable dt = MyDb.Common.sql2DT(sql, cnn);
             mainDataGrid.FieldLayoutSettings.AllowRecordFixing = AllowRecordFixing.TopOrBottom;
             mainDataGrid.FieldLayoutSettings.FilterAction = RecordFilterAction.Hide;
@@ -97,8 +100,7 @@ namespace Tracker.Forms
 
         private void UserControl_Initialized(object sender, EventArgs e)
         {
-            cnn.Open();
-            dbFilter.setFilter(sql, mainDataGrid, cnn);
+            
         }
 
         private void cmdFilter_MouseDown(object sender, MouseButtonEventArgs e)
@@ -109,6 +111,25 @@ namespace Tracker.Forms
                 string sSQl = sqlFilter == "" ? _SQL : "select * from (" + _SQL + ") where " + sqlFilter;
                 cmdFilter.ToolTip = sSQl;
                 Clipboard.SetText(sSQl);//if (e.Button == MouseButtons.Right) { Clipboard.SetText(sSQl); }
+            }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+               // cnn.Close();
+            } catch (Exception ex) 
+            { Console.WriteLine(ex.Message); }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Enum.IsDefined(typeof(MyDb.Common.DataBaseType), cnnType) && cnnString != "")
+            {
+                cnn = MyDb.Common.cnnType2DbConnection(cnnType, cnnString);
+                cnn.Open();
+                dbFilter.setFilter(_SQL, mainDataGrid, cnn);
             }
         }
     }

@@ -18,8 +18,7 @@ namespace Tracker.Classes
         [DataMember]
         public string cnnString { get; set; } 
         [DataMember]
-        public MyDb.Common.DataBaseType cnnType { get; set; }
-
+        public int cnnType { get; set; }
         [DataMember]
         public string HelpPath { get; set; }
         [DataMember]
@@ -36,11 +35,12 @@ namespace Tracker.Classes
 
         [DataMember]
         public bool useWbsInMenuItems { get; set; }
+      
     }
 
-   public class Class_Settings
+    public class Class_Settings
     {
-
+        public static MyDb.Common.DataBaseType getCnnType(cSettings cs) { return ((MyDb.Common.DataBaseType)Enum.Parse(typeof(MyDb.Common.DataBaseType), cs.cnnType.ToString())); }
         public static void Serialize(cSettings cs, string xmlFileName)
         {
             string xmlString = "";

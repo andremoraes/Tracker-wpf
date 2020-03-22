@@ -25,6 +25,7 @@ namespace Tracker
     {
         private readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public DbConnection cnnMain = null;
+        public MyDb.Common.DataBaseType cnnType;
 
         public MainWindow()
         {
@@ -47,19 +48,100 @@ namespace Tracker
             sbVersion.Text = "Version: " + v[0] + "." + v[1] + "." + v[2];
 
             sbUserName.Text = AppsCommon.Classes.Common.User();
+            cnnMain = MyDb.Common.cnnType2DbConnection(Class_Settings.getCnnType(My.Application.Csettings), My.Application.Csettings.cnnString);
             GetMenuItems();
         }
 
+        public class MenuItem
+        {
+            public string Key { get; set; }
+            public string Sql { get; set; }
+            public string SqlUpdate { get; set; }
+            public string Name { get; set; }
+            public string Descr { get; set; }
+            // public Class_Db_Common.DataBaseType cnn_type { get; set; }
+            public int cnn_id { get; set; }
+            public string FormType { get; set; }
+            public bool isMDIList { get; set; }
+            public byte TargetType { get; set; }
+            public string TableName { get; set; }
+            public string Icon { get; set; }
+            public string FeatureCode { get; set; }
+            public string FeatureUrl { get; set; }
+
+
+            public MenuItem(string _Key, string Name, DbConnection cnn)
+            {
+                string sql =
+@"select 
+     feature_name Name, 
+     feature_sql sql, 
+     feature_descr descr,  
+     cnn_id, 
+     feature_icon Icon, 
+     feature_ismdilist isMDIList, 
+     feature_targettype TargetType, 
+     feature_update_sql sqlupdate, 
+     feature_FormType FormType, FEATURE_TABLENAME TABLENAME, feature_Code, 
+     feature_wbs, FEATURE_URL, feature_long_sql long_sql
+from tracker_tb_features
+where prj_no = '{0}' and feature_wbs = '{1}'";
+                
+                sql = string.Format(sql, My.Application.Prj_No, _Key);
+                
+
+                
+                if (cnn !=null && cnn.State == ConnectionState.Open)
+                {
+                    DataTable dt = MyDb.Common.sql2DT(sql, cnn);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        DataRow dr = dt.Rows[0];
+                        Key = _Key; Sql = dr["sql"] + "";
+                        if (Sql.Trim() == "")
+                        {
+                            try { Sql = dr["long_sql"] + ""; }
+                            catch (Exception ex)
+                            { Console.WriteLine(ex.Message); }
+                        }// _log.Fatal(ex); } }
+                        Sql = Sql.Replace("%prj_no%", My.Application.Prj_No);
+                        SqlUpdate = dr["sqlupdate"] + "";
+                        Icon = dr["Icon"] + "";
+                        Descr = dr["Descr"] + "";
+                        if (SqlUpdate.Trim() == "") { SqlUpdate = Sql; }
+                        Name = dr["Name"] + "";
+                        FormType = "Tracker.Forms.ucDataGrid"; //dr["FormType"] + "";
+                        isMDIList = false;
+                        int i = 0, _cnn_id = 1; _cnn_id = int.Parse("0" + dr["cnn_id"]);
+                        cnn_id = _cnn_id;
+                        i = int.Parse("0" + dr["isMDIList"] + "");
+                        isMDIList = i.Equals(1) ? true : false;
+                        TargetType = 0; byte b = 0; b = byte.Parse("0" + dr["TargetType"]);
+                        if (b > 0) { TargetType = b; }
+                        TableName = dr["TableName"] + "";
+                        FeatureCode = dr["Feature_Code"] + "";
+                        FeatureUrl = dr["FEATURE_URL"] + "";
+                    }
+                }
+            }
+        }
+
+
+
         void GetMenuItems()
         {
-         cnnMain = MyDb.Common.cnnType2DbConnection(My.Application.Csettings.cnnType, My.Application.Csettings.cnnString); string sql = "";
+            string sql = "";
             try { cnnMain.Open(); } catch (Exception ex) { MessageBox.Show(ex.Message); }
             if (cnnMain != null && cnnMain.State == ConnectionState.Open)
             {
                 if (this.Main_Menu.HasItems) { this.Main_Menu.Items.Clear(); }
 DataTable dtP = null; try
                 {
-    sql = @"select swbs, view_name from TRACKER_tb_VIEWS t where t.prj_no = '" + My.Application.Prj_No + "' and t.view_enabled=1 and view_parent is null order by view_order";
+    sql = @"
+select FEATURE_WBS swbs, FEATURE_NAME view_name 
+from tracker_tb_features t 
+where t.prj_no = '" + My.Application.Prj_No +
+"' and t.FEATURE_ENABLED=1 and FEATURE_PARENT is null order by FEATURE_ORDER";
     dtP = MyDb.Oracle.sql2DT(sql, cnnMain);
 }
                 catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -71,15 +153,18 @@ DataTable dtP = null; try
         XamMenuItem m = new XamMenuItem();
         m.Tag = wbs; m.Header = wbs + " " + (string)drP["VIEW_NAME"];
         //                    popupmenutool.SharedProps.Category = "Reports";
-        sql = "select swbs, view_name from TRACKER_tb_VIEWS t where t.prj_no = 'BPGOM' and t.view_enabled=1 and view_parent ='" + wbs + "' order by view_order";
+        sql = @"
+select FEATURE_WBS swbs, FEATURE_NAME view_name 
+from tracker_tb_features t 
+where t.prj_no = '" + My.Application.Prj_No + "' and t.FEATURE_ENABLED=1 and FEATURE_PARENT ='" + wbs + "' order by FEATURE_ORDER";
         DataTable dtC = null; try { dtC = MyDb.Oracle.sql2DT(sql, cnnMain); }
         catch (Exception ex) { Debug.WriteLine(ex.Message); }
         if (dtP != null && dtP.Rows.Count > 0)
         {
             foreach (DataRow drC in dtC.Rows)
             {
-                XamMenuItem mm = new XamMenuItem();
-                mm.Tag = (string)drC["swbs"]; mm.Header = (string)drC["swbs"] + " " + (string)drC["view_name"];
+                XamMenuItem mm = new XamMenuItem(); mm.Tag = (string)drC["swbs"]; mm.IsEnabled = GetMenuEnabled(mm.Tag+"");
+                 mm.Header = (string)drC["swbs"] + " " + (string)drC["view_name"];
                 mm.Click += new System.EventHandler(this.XamMenuItem_Click);
                 m.Items.Add(mm);
             }
@@ -89,6 +174,10 @@ DataTable dtP = null; try
 }
 }
         }
+
+        bool GetMenuEnabled(string _Tag)
+        { return true; }
+        //Todo add check in security tables to see if user should not have access to open this
 
         void GetMenuItems_Reports()
         {
@@ -133,10 +222,34 @@ DataTable dtP = null; try
 
         private void XamMenuItem_Click(object sender, EventArgs e)
         {
-            if (sender.GetType().Name == "XamMenu") { return; }
-            
-            Infragistics.Controls.Menus.XamMenuItem m = (Infragistics.Controls.Menus.XamMenuItem)sender;
-            ContentPane contentPane1 = null;
+            try
+            {
+
+                //if (sender.GetType().Name == "XamMenu") { return; }
+                if (sender is XamMenuItem)
+                {
+                    Infragistics.Controls.Menus.XamMenuItem m = (Infragistics.Controls.Menus.XamMenuItem)sender;
+                    MenuItem mi = null;
+                    if (m.Tag + "" != "")
+                    {
+                        mi = new MenuItem(m.Tag + "", m.Header + "", cnnMain);
+                        ContentPane contentPane1 = new ContentPane();
+                        dynamic objNewForm = Activator.CreateInstance(Type.GetType(mi.FormType, false, true));
+                        //Common Attributes
+                        objNewForm.Tag = mi.Key;
+                        objNewForm.cnnType = MyDb.Common.DataBaseType.ORACLE;
+                        objNewForm.cnnString = My.Application.Csettings.cnnString;
+                        objNewForm._SQL = mi.Sql; objNewForm._SQL_Update = mi.SqlUpdate;
+                        //objNewForm.Text = mi.Key + " " + mi.Name;
+                        contentPane1.Header = (string)m.Header;
+                        contentPane1.Content = objNewForm;//f; //p;
+                        Main_TabGroupPane.Items.Add(contentPane1);
+                        // ((WeifenLuo.WinFormsUI.Docking.DockContent)objNewForm).ToolTipText = _Menu.Descr;
+                    }
+                }
+            } catch ( Exception ex)
+            { Console.WriteLine(ex.Message); }
+            /*
             switch ((string)m.Tag)
             {
                 case "1.1":
@@ -150,27 +263,7 @@ DataTable dtP = null; try
                     break;
                 case "6.10.8":
                     ucDataGrid frmDG = new ucDataGrid();
-                    frmDG._SQL = @"SELECT    
-       to_number(year) year,  to_number(month) month, MAX(tdate) max_date,  SUM(hrs) hrs, coa
-FROM 
 
-(
-SELECT year,to_char(t.tdate,'MM') month , hrs,
-CASE WHEN coa LIKE '1___%' THEN 'Safety/Quality (1000)'
-     WHEN coa LIKE '2___%' THEN 'Project Services/Management (2000)'
-     WHEN coa LIKE '3___%' THEN 'Engineering (3000)'  
-     WHEN coa LIKE '4___%' THEN 'Procurement (4000)'
-     WHEN coa LIKE '5___%' THEN 'Construction (5000)'        
-ELSE coa END coa , tdate
-
-FROM BPGM_TB_GBS_LD t
-WHERE year >=2016 AND t.tasknumber LIKE '__P%' AND 
-t.coa NOT LIKE '3111%' AND t.coa NOT LIKE '3511%' AND t.coa NOT LIKE '3970%' AND t.coa NOT LIKE '3982%'
-)
-GROUP BY 
-      year, coa, month
-      ORDER BY 3 DESC,1,2,4
-";
                     contentPane1 = new ContentPane();
                     contentPane1.Header = (string)m.Header;
                     contentPane1.Content = frmDG;//f; //p;
@@ -186,6 +279,7 @@ GROUP BY
                     Main_TabGroupPane.Items.Add(contentPane1);
                     break;
             }
+            */
         }
 
         //todo: private Classes.cSettings SaveSettings()

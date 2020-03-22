@@ -10,7 +10,7 @@
              xmlns:local="clr-namespace:Tracker.UserControls"
              xmlns:UserControls11="clr-namespace:Tracker.UserControls;assembly=Tracker.UserControls"
              mc:Ignorable="d"  Height="Auto" Width="Auto" 
-             d:DesignHeight="450" d:DesignWidth="1000" Initialized="UserControl_Initialized">
+             d:DesignHeight="450" d:DesignWidth="1000" Initialized="UserControl_Initialized" Unloaded="UserControl_Unloaded" Loaded="UserControl_Loaded">
     <Grid>
         <igDocManager:XamDockManager   x:Name="DockManager" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Top" Theme="Office2k7Blue" LayoutMode="FillContainer" TabItemDragBehavior="DisplayTabPreview" UseOwnedFloatingWindows="False">
             <igDocManager:XamDockManager.Panes>
