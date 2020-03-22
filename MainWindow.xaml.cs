@@ -74,19 +74,35 @@ namespace Tracker
             {
                 string sql =
 @"select 
-     feature_name Name, 
-     feature_sql sql, 
-     feature_descr descr,  
+     feature_name as Name, 
+     feature_sql as sql, 
+     feature_descr as descr,  
      cnn_id, 
-     feature_icon Icon, 
-     feature_ismdilist isMDIList, 
-     feature_targettype TargetType, 
-     feature_update_sql sqlupdate, 
-     feature_FormType FormType, FEATURE_TABLENAME TABLENAME, feature_Code, 
-     feature_wbs, FEATURE_URL, feature_long_sql long_sql
+     feature_icon as Icon, 
+     feature_ismdilist as isMDIList, 
+     feature_targettype as TargetType, 
+     feature_update_sql as sqlupdate, 
+     feature_FormType as FormType, FEATURE_TABLENAME as TABLENAME, feature_Code, 
+     feature_wbs, FEATURE_URL, feature_long_sql as long_sql
 from tracker_tb_features
 where prj_no = '{0}' and feature_wbs = '{1}'";
-                
+                sql =
+@"select 
+     feature_name, 
+     feature_sql, 
+     feature_descr,
+     cnn_id, 
+     feature_update_sql, 
+     feature_FormType,
+     feature_wbs, 
+     feature_icon,
+     feature_long_sql,
+     feature_ismdilist, 
+     feature_targettype,
+     FEATURE_URL
+from tracker_tb_features
+where prj_no = '{0}' and feature_wbs = '{1}'";
+
                 sql = string.Format(sql, My.Application.Prj_No, _Key);
                 
 
@@ -97,29 +113,29 @@ where prj_no = '{0}' and feature_wbs = '{1}'";
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         DataRow dr = dt.Rows[0];
-                        Key = _Key; Sql = dr["sql"] + "";
+                        Key = _Key; Sql = dr["feature_sql"] + "";
                         if (Sql.Trim() == "")
                         {
-                            try { Sql = dr["long_sql"] + ""; }
+                            try { Sql = dr["feature_long_sql"] + ""; }
                             catch (Exception ex)
                             { Console.WriteLine(ex.Message); }
                         }// _log.Fatal(ex); } }
                         Sql = Sql.Replace("%prj_no%", My.Application.Prj_No);
-                        SqlUpdate = dr["sqlupdate"] + "";
-                        Icon = dr["Icon"] + "";
-                        Descr = dr["Descr"] + "";
+                        SqlUpdate = dr["feature_update_sql"] + "";
+                        Icon = dr["feature_icon"] + "";
+                        Descr = dr["feature_descr"] + "";
                         if (SqlUpdate.Trim() == "") { SqlUpdate = Sql; }
-                        Name = dr["Name"] + "";
-                        FormType = "Tracker.Forms.ucDataGrid"; //dr["FormType"] + "";
+                        Name = dr["feature_name"] + "";
+                        FormType = dr["feature_FormType"] + ""; //"Tracker.Forms.ucDataGrid"; 
                         isMDIList = false;
                         int i = 0, _cnn_id = 1; _cnn_id = int.Parse("0" + dr["cnn_id"]);
                         cnn_id = _cnn_id;
-                        i = int.Parse("0" + dr["isMDIList"] + "");
+                        i = int.Parse("0" + dr["feature_ismdilist"] + "");
                         isMDIList = i.Equals(1) ? true : false;
-                        TargetType = 0; byte b = 0; b = byte.Parse("0" + dr["TargetType"]);
+                        TargetType = 0; byte b = 0; b = byte.Parse("0" + dr["feature_targettype"]);
                         if (b > 0) { TargetType = b; }
-                        TableName = dr["TableName"] + "";
-                        FeatureCode = dr["Feature_Code"] + "";
+                        //TableName = dr["TableName"] + "";
+                        //FeatureCode = dr["Feature_Code"] + "";
                         FeatureUrl = dr["FEATURE_URL"] + "";
                     }
                 }
@@ -131,20 +147,22 @@ where prj_no = '{0}' and feature_wbs = '{1}'";
         void GetMenuItems()
         {
             string sql = "";
-            try { cnnMain.Open(); } catch (Exception ex) { MessageBox.Show(ex.Message); }
+            try { cnnMain.Open(); } catch (Exception ex) 
+            { MessageBox.Show(ex.Message); }
             if (cnnMain != null && cnnMain.State == ConnectionState.Open)
             {
                 if (this.Main_Menu.HasItems) { this.Main_Menu.Items.Clear(); }
 DataTable dtP = null; try
                 {
     sql = @"
-select FEATURE_WBS swbs, FEATURE_NAME view_name 
+select FEATURE_WBS as swbs, FEATURE_NAME as view_name 
 from tracker_tb_features t 
 where t.prj_no = '" + My.Application.Prj_No +
 "' and t.FEATURE_ENABLED=1 and FEATURE_PARENT is null order by FEATURE_ORDER";
-    dtP = MyDb.Oracle.sql2DT(sql, cnnMain);
+    dtP = MyDb.Common.sql2DT(sql, cnnMain);
 }
-                catch (Exception ex) { Debug.WriteLine(ex.Message); }
+                catch (Exception ex) 
+                { MessageBox.Show(ex.Message); }
                 if (dtP != null && dtP.Rows.Count > 0)
                 {
     foreach (DataRow drP in dtP.Rows)
@@ -154,11 +172,12 @@ where t.prj_no = '" + My.Application.Prj_No +
         m.Tag = wbs; m.Header = wbs + " " + (string)drP["VIEW_NAME"];
         //                    popupmenutool.SharedProps.Category = "Reports";
         sql = @"
-select FEATURE_WBS swbs, FEATURE_NAME view_name 
+select FEATURE_WBS as swbs, FEATURE_NAME as view_name 
 from tracker_tb_features t 
 where t.prj_no = '" + My.Application.Prj_No + "' and t.FEATURE_ENABLED=1 and FEATURE_PARENT ='" + wbs + "' order by FEATURE_ORDER";
-        DataTable dtC = null; try { dtC = MyDb.Oracle.sql2DT(sql, cnnMain); }
-        catch (Exception ex) { Debug.WriteLine(ex.Message); }
+        DataTable dtC = null; try { dtC = MyDb.Common.sql2DT(sql, cnnMain); }
+        catch (Exception ex)
+                        { MessageBox.Show(ex.Message); }
         if (dtP != null && dtP.Rows.Count > 0)
         {
             foreach (DataRow drC in dtC.Rows)
@@ -237,7 +256,7 @@ where t.prj_no = '" + My.Application.Prj_No + "' and t.FEATURE_ENABLED=1 and FEA
                         dynamic objNewForm = Activator.CreateInstance(Type.GetType(mi.FormType, false, true));
                         //Common Attributes
                         objNewForm.Tag = mi.Key;
-                        objNewForm.cnnType = MyDb.Common.DataBaseType.ORACLE;
+                        objNewForm.cnnType = cnnType; //MyDb.Common.DataBaseType.ORACLE;
                         objNewForm.cnnString = My.Application.Csettings.cnnString;
                         objNewForm._SQL = mi.Sql; objNewForm._SQL_Update = mi.SqlUpdate;
                         //objNewForm.Text = mi.Key + " " + mi.Name;
@@ -248,7 +267,7 @@ where t.prj_no = '" + My.Application.Prj_No + "' and t.FEATURE_ENABLED=1 and FEA
                     }
                 }
             } catch ( Exception ex)
-            { Console.WriteLine(ex.Message); }
+            { MessageBox.Show(ex.Message); }
             /*
             switch ((string)m.Tag)
             {
