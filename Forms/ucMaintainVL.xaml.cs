@@ -43,7 +43,7 @@ namespace Tracker.Forms
 
         private void cmdHelp_Click(object sender, RoutedEventArgs e)
         {
-            Tracker.Classes.tCommon.fHelp((string)this.Tag, "");
+            AppsCommon.Classes.Common.fHelp((string)this.Tag, "");
         }
 
         private void cmdExportData_Click(object sender, RoutedEventArgs e)
