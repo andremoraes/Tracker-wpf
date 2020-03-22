@@ -1,0 +1,11 @@
+<cSettings xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Tracker.Classes">
+  <cnnString>Provider=Microsoft.ACE.OLEDB.12.0;Data Source='DataBase\Tracker.accdb';Persist Security Info=True;</cnnString>
+  <cnnType>0</cnnType>
+  <HelpPath>Help\\</HelpPath>
+  <LayoutsPath>Layouts\\</LayoutsPath>
+  <TemplatesPath>Templates\\</TemplatesPath>
+  <PublicPath>\\USHDCWPFIL02.worleyparsons.com\Depts\IIS\Gen_Tracker\</PublicPath>
+  <ImagesPath>Atlantis General</ImagesPath>
+  <SP_RowLimit>1000</SP_RowLimit>
+  <useWbsInMenuItems>true</useWbsInMenuItems>
+</cSettings>
